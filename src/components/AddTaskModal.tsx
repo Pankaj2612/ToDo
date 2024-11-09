@@ -53,13 +53,13 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
   const [assignedTo, setAssignedTo] = useState<string>(
     taskToEdit?.category || "To Do"
   );
-  const [priority, setPriority] = useState(taskToEdit?.priority || "Medium");
+  const [priority, setPriority] = useState("Medium");
 
   const handleSave = () => {
     // Implement save logic here
     if (!deadline) return Date.now();
     const task: Task = {
-      id: uuidv4(),
+      id: taskToEdit?.id || uuidv4(),
       title: taskTitle,
       description: taskDescription,
       category: assignedTo,
@@ -108,7 +108,7 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="h-px bg-gray-200" aria-hidden="true" />
+              <div className="h-px bg-gray-200 " aria-hidden="true" />
             </div>
             <Textarea
               className="min-h-[200px] resize-none"
@@ -164,7 +164,6 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
               <div className="space-y-2">
                 <Label>Priority</Label>
                 <RadioGroup
-                  defaultValue="Medium"
                   value={priority}
                   onValueChange={setPriority}
                   className="flex space-x-2 ">
@@ -215,9 +214,7 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
           Cancel
         </Button>
 
-        <Button className="bg-primary" onClick={handleSave}>
-          Save Task
-        </Button>
+        <Button onClick={handleSave}>Save Task</Button>
       </CardFooter>
     </Card>
   );

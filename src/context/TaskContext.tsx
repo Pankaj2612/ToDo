@@ -9,12 +9,13 @@ import React, {
 import axios from "axios";
 import Task from "@/types/Task";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface TaskContextType {
   tasks: Task[];
   totalTasks: number;
   activeTasks: number;
+  completedTask: number;
   expiredTasks: number;
   addTask: (task: Task) => Promise<void>;
   updateTask: (id: string, updatedTask: Partial<Task>) => Promise<void>;
@@ -31,6 +32,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
   const [totalTasks, setTotalTasks] = useState<number>(0);
   const [activeTasks, setActiveTasks] = useState<number>(0);
   const [expiredTasks, setExpiredTasks] = useState<number>(0);
+  const [completedTask, setcompletedTask] = useState<number>(0);
 
   // Fetch all tasks from the backend
   const fetchTasks = useCallback(async () => {
@@ -49,10 +51,12 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
       (task) => task.category === "On Progress" || task.category !== "To Do"
     ).length;
     const expired = tasks.filter((task) => task.category === "Timeout").length;
+    const compelete = tasks.filter((task) => task.category === "Done").length;
 
     setTotalTasks(total);
     setActiveTasks(active);
     setExpiredTasks(expired);
+    setcompletedTask(compelete);
   };
 
   // Add a new task
@@ -120,6 +124,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
         totalTasks,
         activeTasks,
         expiredTasks,
+        completedTask,
         addTask,
         updateTask,
         deleteTask,

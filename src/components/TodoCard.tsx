@@ -11,7 +11,6 @@ import Task from "@/types/Task";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { AddTaskModal } from "./AddTaskModal";
 import { useState } from "react";
-
 interface TodoCardProps {
   task: Task;
   ondelete: () => Promise<void>;
@@ -65,8 +64,8 @@ const TodoCard: React.FC<TodoCardProps> = ({ task, ondelete }) => {
           <DialogTrigger asChild>
             {/* Optional trigger, could be the "Edit" button itself */}
           </DialogTrigger>
+
           <DialogContent className="p-0 bg-white w-auto">
-            {/* Pass taskToEdit to the AddTaskModal */}
             <AddTaskModal
               onClose={() => setIsOpen(false)} // Close the modal when done
               taskToEdit={task} // Pass the task to edit

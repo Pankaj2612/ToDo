@@ -10,7 +10,7 @@ import { AddTaskModal } from "./AddTaskModal";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export default function HomePage() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const {
     tasks,
     totalTasks,
@@ -18,6 +18,7 @@ export default function HomePage() {
     deleteTask,
     fetchTasks,
     expiredTasks,
+    completedTask,
   } = useTasks();
 
   useEffect(() => {
@@ -100,7 +101,9 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Completed Tasks</p>
-                <p className="text-2xl font-bold">/{totalTasks}</p>
+                <p className="text-2xl font-bold">
+                  {completedTask}/{totalTasks}
+                </p>
               </div>
             </div>
           </div>
