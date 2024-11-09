@@ -10,7 +10,7 @@ import { AddTaskModal } from "./AddTaskModal";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export default function HomePage() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const {
     tasks,
     totalTasks,
