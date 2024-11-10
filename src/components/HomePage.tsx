@@ -12,6 +12,9 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const {
+    TodoTask,
+    OnProgress,
+    Done,
     tasks,
     totalTasks,
     activeTasks,
@@ -145,11 +148,11 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-blue-600" />
               <h2 className="font-semibold">To Do</h2>
-              <Badge variant="secondary">3</Badge>
+              <Badge variant="secondary">{TodoTask}</Badge>
             </div>
             {tasks && tasks.length > 0 ? (
               tasks
-                .filter((task) => task.category == "To Do")
+                .filter((task) => task.category === "To Do")
                 .map((task, idx) => (
                   <TodoCard
                     task={task}
@@ -168,11 +171,11 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-yellow-400" />
               <h2 className="font-semibold">On Progress</h2>
-              <Badge variant="secondary">2</Badge>
+              <Badge variant="secondary">{OnProgress}</Badge>
             </div>
             {tasks && tasks.length > 0 ? (
               tasks
-                .filter((task) => task.category == "On Progress")
+                .filter((task) => task.category === "On Progress")
                 .map((task, idx) => (
                   <TodoCard
                     task={task}
@@ -191,11 +194,11 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-500" />
               <h2 className="font-semibold">Done</h2>
-              <Badge variant="secondary">2</Badge>
+              <Badge variant="secondary">{Done}</Badge>
             </div>
             {tasks && tasks.length > 0 ? (
               tasks
-                .filter((task) => task.category == "Done")
+                .filter((task) => task.category === "Done")
                 .map((task, idx) => (
                   <TodoCard
                     task={task}

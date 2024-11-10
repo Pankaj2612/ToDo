@@ -19,7 +19,7 @@ interface TodoCardProps {
 const TodoCard: React.FC<TodoCardProps> = ({ task, ondelete }) => {
   const [isOpen, setIsOpen] = useState(false);
   const priorityColors: Record<Task["priority"], string> = {
-    High: "red-100",
+    High: "red-500",
     Medium: "yellow-400",
     Low: "orange-100",
   };
@@ -27,10 +27,10 @@ const TodoCard: React.FC<TodoCardProps> = ({ task, ondelete }) => {
   const color = priorityColors[task.priority];
   return (
     <Card className="bg-white shadow-md">
-      <CardHeader className="flex flex-row d items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row d items-center bg-or red justify-between space-y-0 pb-2">
         <Badge
           variant="secondary"
-          className={task.category === "Done" ? `bg-green-300` : `bg-${color}`}>
+          className={task.category === "Done" ? `bg-green-500` : `bg-${color}`}>
           {task.category == "Done" ? "Completed" : task.priority}
         </Badge>
         <DropdownMenu>

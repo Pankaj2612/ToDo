@@ -11,6 +11,9 @@ interface TaskContextType {
   totalTasks: number;
   activeTasks: number;
   completedTask: number;
+  TodoTask: number;
+  OnProgress: number;
+  Done: number;
   expiredTasks: number;
   addTask: (task: Task) => Promise<void>;
   updateTask: (id: string, updatedTask: Partial<Task>) => Promise<void>;
@@ -26,8 +29,11 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalTasks, setTotalTasks] = useState<number>(0);
   const [activeTasks, setActiveTasks] = useState<number>(0);
-  const [expiredTasks, setExpiredTasks] = useState<number>(0);
   const [completedTask, setcompletedTask] = useState<number>(0);
+  const [expiredTasks, setExpiredTasks] = useState<number>(0);
+  const [TodoTask, setTodoTask] = useState<number>(0);
+  const [OnProgress, setOnProgress] = useState<number>(0);
+  const [Done, setDone] = useState<number>(0);
 
   // Fetch all tasks from the backend
   const fetchTasks = useCallback(async () => {
@@ -42,13 +48,19 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
 
   const updateTaskCounts = (tasks: Task[]) => {
     const total = tasks.length;
-    const active = tasks.filter(
-      (task) => task.category === "On Progress" || task.category !== "To Do"
-    ).length;
+    const active = tasks.filter((task) => task.category !== "Done").length;
     const expired = tasks.filter((task) => task.category === "Timeout").length;
     const compelete = tasks.filter((task) => task.category === "Done").length;
+    const todo = tasks.filter((task) => task.category === "To Do").length;
+    const onprogress = tasks.filter(
+      (task) => task.category === "On Progress"
+    ).length;
+    const done = tasks.filter((task) => task.category === "Done").length;
 
     setTotalTasks(total);
+    setTodoTask(todo);
+    setOnProgress(onprogress);
+    setDone(done);
     setActiveTasks(active);
     setExpiredTasks(expired);
     setcompletedTask(compelete);
@@ -111,10 +123,12 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-
   return (
     <TaskContext.Provider
       value={{
+        TodoTask,
+        OnProgress,
+        Done,
         tasks,
         totalTasks,
         activeTasks,

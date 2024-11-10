@@ -58,13 +58,13 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
   >(taskToEdit?.category || "To Do");
 
   useEffect(() => {
-    console.log(status);
-  }, [status]);
+    console.log(assignedTo);
+  }, [assignedTo]);
 
   const handleSave = () => {
     // Implement save logic here
     if (!deadline) return Date.now();
-    console.log("save statys", status);
+    console.log(assignedTo);
 
     const task: Task = {
       id: taskToEdit?.id || uuidv4(),
