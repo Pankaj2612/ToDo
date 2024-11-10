@@ -8,7 +8,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "./ui/card";
 import Task from "@/types/Task";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent } from "./ui/dialog";
 import { AddTaskModal } from "./AddTaskModal";
 import { useState } from "react";
 interface TodoCardProps {
@@ -61,10 +61,6 @@ const TodoCard: React.FC<TodoCardProps> = ({ task, ondelete }) => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            {/* Optional trigger, could be the "Edit" button itself */}
-          </DialogTrigger>
-
           <DialogContent className="p-0 bg-white w-auto">
             <AddTaskModal
               onClose={() => setIsOpen(false)} // Close the modal when done

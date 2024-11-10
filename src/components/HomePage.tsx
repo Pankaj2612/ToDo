@@ -22,8 +22,6 @@ export default function HomePage() {
   } = useTasks();
 
   useEffect(() => {
-    console.log("fetch");
-
     fetchTasks();
   }, [fetchTasks]);
 
@@ -107,20 +105,18 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full bg-[#0D0B21] text-white hover:bg-[#0D0B21]/90">
-                + Add Task
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="p-0  bg-white w-auto">
-              <AddTaskModal onClose={() => setIsOpen(false)} />
-            </DialogContent>
-          </Dialog>
+          <Button
+            className="w-full bg-[#0D0B21] text-white hover:bg-[#0D0B21]/90"
+            onClick={() => setIsOpen(true)}>
+            + Add Task
+          </Button>
         </div>
       </div>
-
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="p-0 bg-white w-auto">
+          <AddTaskModal onClose={() => setIsOpen(false)} />
+        </DialogContent>
+      </Dialog>
       {/* Main Content */}
       <div className="flex-1 p-4">
         {/* Search and Filter */}
@@ -136,7 +132,7 @@ export default function HomePage() {
                 +
               </Button>
             </DialogTrigger>
-            <DialogContent className="p-0  bg-white w-auto">
+            <DialogContent aria-modal className="p-0  bg-white w-auto">
               <AddTaskModal onClose={() => setIsOpen(false)} />
             </DialogContent>
           </Dialog>

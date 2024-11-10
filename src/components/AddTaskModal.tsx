@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
+
 import {
   Card,
   CardContent,
@@ -31,7 +32,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { format } from "date-fns";
 import { useTasks } from "@/context/useTasks";
 import Task from "@/types/Task";
@@ -43,47 +43,51 @@ interface AddTaskModalProps {
 
 export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
   const { addTask, updateTask } = useTasks();
+  const [status, setStatus] = useState<string | "Low" | "Medium" | "High">(
+    taskToEdit?.priority || "Low"
+  );
   const [taskTitle, setTaskTitle] = useState(taskToEdit?.title || "TASK 1");
   const [taskDescription, setTaskDescription] = useState(
     taskToEdit?.description || ""
   );
   const [deadline, setDeadline] = useState<Date | undefined>(
-    taskToEdit?.deadline ? new Date(taskToEdit.deadline) : undefined
+    taskToEdit?.deadline ? new Date(taskToEdit.deadline) : new Date()
   );
-  const [assignedTo, setAssignedTo] = useState<string>(
-    taskToEdit?.category || "To Do"
-  );
-  const [priority, setPriority] = useState("Medium");
+  const [assignedTo, setAssignedTo] = useState<
+    string | "To Do" | "On Progress" | "Done"
+  >(taskToEdit?.category || "To Do");
+
+  useEffect(() => {
+    console.log(status);
+  }, [status]);
 
   const handleSave = () => {
     // Implement save logic here
     if (!deadline) return Date.now();
+    console.log("save statys", status);
+
     const task: Task = {
       id: taskToEdit?.id || uuidv4(),
       title: taskTitle,
       description: taskDescription,
       category: assignedTo,
-      priority: priority,
+      priority: status,
       deadline: deadline,
       duration: deadline.getTime() - Date.now(),
     };
     if (taskToEdit) {
       updateTask(taskToEdit.id, task); // Update the task
     } else {
-      addTask(task); // Add a new task
+      addTask(task);
     }
 
     onClose();
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto" aria-hidden="false">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">ADD TASK</CardTitle>
-        {/* <Button variant="ghost" size="icon" onClick={onClose}>
-          <Plus className="h-4 w-4 rotate-45" />
-          <span className="sr-only">Close</span>
-        </Button> */}
       </CardHeader>
       <CardContent>
         <form onSubmit={(e) => e.preventDefault()}>
@@ -108,7 +112,7 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="h-px bg-gray-200 " aria-hidden="true" />
+              <div className="h-px bg-gray-200 " />
             </div>
             <Textarea
               className="min-h-[200px] resize-none"
@@ -142,7 +146,6 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
                         mode="single"
                         selected={deadline}
                         onSelect={setDeadline}
-                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
@@ -162,48 +165,44 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Priority</Label>
-                <RadioGroup
-                  value={priority}
-                  onValueChange={setPriority}
-                  className="flex space-x-2 ">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
+                <label>Priority</label>
+                <div className="flex space-x-4">
+                  {/* Low Priority */}
+                  <label className="flex items-center space-x-2 cursor-pointer sr">
+                    <input
+                      type="radio"
+                      name="priority"
                       value="Low"
-                      id="Low"
-                      className="peer sr-only"
+                      checked={status === "Low"}
+                      onChange={(e) => setStatus(e.target.value)}
                     />
-                    <Label
-                      htmlFor="Low"
-                      className="rounded-full cursor-pointer px-3 py-1 text-xs font-semibold peer-aria-checked:bg-green-100 peer-aria-checked:text-green-600 bg-gray-100">
-                      Low
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
+                    <span className="text-sm font-semibold">Low</span>
+                  </label>
+
+                  {/* Medium Priority */}
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="priority"
                       value="Medium"
-                      id="Medium"
-                      className="peer sr-only"
+                      checked={status === "Medium"}
+                      onChange={(e) => setStatus(e.target.value)}
                     />
-                    <Label
-                      htmlFor="Medium"
-                      className="rounded-full px-3 cursor-pointer py-1 text-xs font-semibold peer-aria-checked:bg-yellow-100 peer-aria-checked:text-yellow-600 bg-gray-100">
-                      Medium
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
+                    <span className="text-sm font-semibold">Medium</span>
+                  </label>
+
+                  {/* High Priority */}
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="priority"
                       value="High"
-                      id="High"
-                      className="peer sr-only"
+                      checked={status === "High"}
+                      onChange={(e) => setStatus(e.target.value)}
                     />
-                    <Label
-                      htmlFor="High"
-                      className="rounded-full px-3 cursor-pointer py-1 text-xs font-semibold peer-aria-checked:bg-red-100 peer-aria-checked:text-red-600 bg-gray-100">
-                      High
-                    </Label>
-                  </div>
-                </RadioGroup>
+                    <span className="text-sm font-semibold">High</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -213,7 +212,6 @@ export function AddTaskModal({ onClose, taskToEdit }: AddTaskModalProps) {
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
-
         <Button onClick={handleSave}>Save Task</Button>
       </CardFooter>
     </Card>

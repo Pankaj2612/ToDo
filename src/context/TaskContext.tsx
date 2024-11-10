@@ -1,13 +1,8 @@
 // TaskContext.tsx
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  ReactNode,
-  useCallback,
-} from "react";
+import React, { createContext, useState, ReactNode, useCallback } from "react";
 import axios from "axios";
 import Task from "@/types/Task";
+import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -63,11 +58,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
   const addTask = async (task: Task) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/tasks`, task);
+      if (response.status === 201) {
+        toast.success("New Task Created Succesfully");
+      }
       const updatedTasks = [...tasks, response.data];
       setTasks(updatedTasks);
       updateTaskCounts(updatedTasks);
-    } catch (error) {
-      console.error("Error adding task:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.error || "Something went wrong";
+      toast.error(errorMessage);
     }
   };
 
@@ -78,44 +78,39 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
         `${API_BASE_URL}/tasks/${id}`,
         updatedTask
       );
+      if (response.status === 201) {
+        toast.success("Task Updated");
+      }
       const updatedTasks = tasks.map((task) =>
         task.id === id ? response.data : task
       );
+
       setTasks(updatedTasks);
       updateTaskCounts(updatedTasks);
-    } catch (error) {
-      console.error("Error updating task:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.error || "Something went wrong";
+      toast.error(errorMessage);
     }
   };
 
   // Delete a task
   const deleteTask = async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/tasks/${id}`);
+      const response = await axios.delete(`${API_BASE_URL}/tasks/${id}`);
       const updatedTasks = tasks.filter((task) => task.id !== id);
+      if (response.status === 201) {
+        toast.success("Task Deleted Succesfully");
+      }
       setTasks(updatedTasks);
       updateTaskCounts(updatedTasks);
-    } catch (error) {
-      console.error("Error deleting task:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.error || "Something went wrong";
+      toast.error(errorMessage);
     }
   };
 
-  // Timeout handling for tasks
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.duration &&
-          now - new Date(task.deadline).getTime() > task.duration
-            ? { ...task, category: "Timeout" }
-            : task
-        )
-      );
-    }, 1000 * 60); // Check every minute
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <TaskContext.Provider
